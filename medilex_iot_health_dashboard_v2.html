@@ -1,0 +1,452 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .dashboard { padding: 1.25rem 0; }
+
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem; padding-bottom: 1rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+  }
+  .top-bar-left { display: flex; align-items: center; gap: 12px; }
+  .brand-icon {
+    width: 38px; height: 38px; border-radius: var(--border-radius-md);
+    background: #0A0F1E; display: flex; align-items: center; justify-content: center;
+  }
+  .brand-icon i { color: #00B4D8; font-size: 20px; }
+  .brand-name { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+  .brand-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 1px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--color-background-success); color: var(--color-text-success);
+    font-size: 12px; padding: 4px 10px; border-radius: 99px;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+  .pulse-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.85)} }
+  .watch-info { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); }
+
+  .metric-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 1.25rem;
+  }
+  .metric-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md); padding: 1rem;
+  }
+  .metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .metric-label i { font-size: 14px; }
+  .metric-value { font-size: 26px; font-weight: 500; color: var(--color-text-primary); line-height: 1; }
+  .metric-unit { font-size: 13px; font-weight: 400; color: var(--color-text-secondary); margin-left: 2px; }
+  .metric-status { font-size: 11px; margin-top: 6px; }
+  .status-normal { color: var(--color-text-success); }
+  .status-warn   { color: var(--color-text-warning); }
+  .status-danger { color: var(--color-text-danger); }
+  .metric-mini-bar { height: 3px; border-radius: 2px; margin-top: 10px; background: var(--color-border-tertiary); }
+  .metric-mini-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+
+  .bmi-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md); padding: 1rem;
+    grid-column: span 2;
+  }
+  .bmi-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .bmi-inputs { display: flex; gap: 8px; margin-top: 8px; }
+  .bmi-input-wrap { display: flex; flex-direction: column; gap: 3px; }
+  .bmi-input-wrap label { font-size: 11px; color: var(--color-text-secondary); }
+  .bmi-input-wrap input {
+    width: 80px; padding: 5px 8px; font-size: 13px;
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+  }
+  .bmi-result { text-align: right; }
+  .bmi-number { font-size: 26px; font-weight: 500; color: var(--color-text-primary); }
+  .bmi-category { font-size: 11px; margin-top: 3px; }
+  .bmi-scale {
+    display: flex; margin-top: 10px; border-radius: 3px; overflow: hidden; height: 6px;
+  }
+  .bmi-seg { flex: 1; }
+  .bmi-needle-row { display: flex; position: relative; height: 12px; margin-top: 2px; }
+  .bmi-needle { position: absolute; transform: translateX(-50%); transition: left 0.5s; }
+  .bmi-needle-dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--color-text-primary); background: var(--color-background-primary); }
+
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.25rem; }
+  .chart-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg); padding: 1rem 1.25rem;
+  }
+  .chart-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  .chart-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); display: flex; align-items: center; gap: 6px; }
+  .chart-title i { font-size: 16px; }
+  .chart-range { display: flex; gap: 4px; }
+  .range-btn {
+    font-size: 11px; padding: 3px 8px; border-radius: var(--border-radius-md);
+    border: 0.5px solid var(--color-border-tertiary); background: transparent;
+    color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s;
+  }
+  .range-btn.active { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+
+  .ai-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg); padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .ai-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .ai-avatar { width: 36px; height: 36px; border-radius: 50%; background: #0A0F1E; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ai-avatar i { color: #00B4D8; font-size: 18px; }
+  .ai-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .ai-role { font-size: 11px; color: var(--color-text-secondary); }
+  .ai-status-pill { margin-left: auto; font-size: 11px; padding: 3px 9px; border-radius: 99px; border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; gap: 5px; }
+  .ai-body { font-size: 13px; color: var(--color-text-primary); line-height: 1.65; }
+  .ai-insight { background: var(--color-background-secondary); border-left: 2.5px solid; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 10px 14px; margin-top: 12px; font-size: 13px; line-height: 1.6; }
+  .ai-insight.ok     { border-color: #22c55e; }
+  .ai-insight.warn   { border-color: #f59e0b; }
+  .ai-insight.danger { border-color: #ef4444; }
+
+  .rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .rec-item { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 9px 12px; display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--color-text-secondary); }
+  .rec-item i { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  .ask-row { display: flex; gap: 8px; margin-top: 1rem; flex-wrap: wrap; }
+  .ask-btn { font-size: 12px; }
+
+  .history-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+  .history-header { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px; }
+  .history-header i { font-size: 16px; }
+  .history-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; }
+  .history-row:last-child { border-bottom: none; }
+  .history-time { color: var(--color-text-secondary); min-width: 60px; }
+  .history-vals { display: flex; gap: 16px; }
+  .history-hr   { color: var(--color-text-primary); }
+  .history-spo2 { color: var(--color-text-info); }
+  .history-tag  { font-size: 11px; padding: 2px 8px; border-radius: 99px; }
+  .tag-ok   { background: var(--color-background-success); color: var(--color-text-success); }
+  .tag-warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .tag-crit { background: var(--color-background-danger);  color: var(--color-text-danger); }
+</style>
+
+<div class="dashboard">
+  <h2 class="sr-only">MediLex IoT health dashboard — heart rate, SpO2, height, weight, BMI</h2>
+
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="brand-icon"><i class="ti ti-activity-heartbeat" aria-hidden="true"></i></div>
+      <div>
+        <div class="brand-name">MediLex Health Monitor</div>
+        <div class="brand-sub">IoT Wearable Integration</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="watch-info"><i class="ti ti-device-watch" aria-hidden="true"></i> Smart Watch · Baljinder Singh</div>
+      <div class="live-badge"><span class="pulse-dot"></span>Live</div>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-heart" style="color:#ef4444" aria-hidden="true"></i>Heart Rate</div>
+      <div><span class="metric-value" id="hr-val">72</span><span class="metric-unit">bpm</span></div>
+      <div class="metric-status status-normal" id="hr-status">✓ Normal (60–100 bpm)</div>
+      <div class="metric-mini-bar"><div class="metric-mini-fill" id="hr-bar" style="width:48%;background:#ef4444;"></div></div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-drop-circle" style="color:#3b82f6" aria-hidden="true"></i>SpO2</div>
+      <div><span class="metric-value" id="spo2-val">98</span><span class="metric-unit">%</span></div>
+      <div class="metric-status status-normal" id="spo2-status">✓ Excellent saturation</div>
+      <div class="metric-mini-bar"><div class="metric-mini-fill" id="spo2-bar" style="width:98%;background:#3b82f6;"></div></div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-ruler-2" style="color:#8b5cf6" aria-hidden="true"></i>Height</div>
+      <div><span class="metric-value" id="disp-height">175</span><span class="metric-unit">cm</span></div>
+      <div class="metric-status status-normal">Patient profile</div>
+      <div class="metric-mini-bar"><div class="metric-mini-fill" style="width:70%;background:#8b5cf6;"></div></div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-weight" style="color:#f59e0b" aria-hidden="true"></i>Weight</div>
+      <div><span class="metric-value" id="disp-weight">68</span><span class="metric-unit">kg</span></div>
+      <div class="metric-status status-normal">Patient profile</div>
+      <div class="metric-mini-bar"><div class="metric-mini-fill" style="width:55%;background:#f59e0b;"></div></div>
+    </div>
+  </div>
+
+  <div class="bmi-card" style="margin-bottom:1.25rem;">
+    <div class="metric-label" style="margin-bottom:8px;"><i class="ti ti-chart-donut" style="color:#0ea5e9" aria-hidden="true"></i>BMI Calculator</div>
+    <div class="bmi-top">
+      <div>
+        <div class="bmi-inputs">
+          <div class="bmi-input-wrap">
+            <label for="inp-height">Height (cm)</label>
+            <input type="number" id="inp-height" value="175" min="100" max="250" oninput="recalcBMI()">
+          </div>
+          <div class="bmi-input-wrap">
+            <label for="inp-weight">Weight (kg)</label>
+            <input type="number" id="inp-weight" value="68" min="20" max="300" oninput="recalcBMI()">
+          </div>
+        </div>
+      </div>
+      <div class="bmi-result">
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:2px;">BMI</div>
+        <div class="bmi-number" id="bmi-val">22.2</div>
+        <div class="bmi-category" id="bmi-cat" style="color:var(--color-text-success);">Normal weight</div>
+      </div>
+    </div>
+
+    <div class="bmi-scale" style="margin-top:14px;">
+      <div class="bmi-seg" style="background:#3b82f6;flex:1.25;" title="Underweight <18.5"></div>
+      <div class="bmi-seg" style="background:#22c55e;flex:1.25;" title="Normal 18.5–24.9"></div>
+      <div class="bmi-seg" style="background:#f59e0b;flex:1.0;" title="Overweight 25–29.9"></div>
+      <div class="bmi-seg" style="background:#ef4444;flex:1.0;" title="Obese 30+"></div>
+    </div>
+    <div class="bmi-needle-row">
+      <div class="bmi-needle" id="bmi-needle" style="left:42%;">
+        <div class="bmi-needle-dot"></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--color-text-secondary);margin-top:4px;">
+      <span style="color:#3b82f6;">Underweight</span><span style="color:#22c55e;">Normal</span><span style="color:#f59e0b;">Overweight</span><span style="color:#ef4444;">Obese</span>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-title"><i class="ti ti-heart" style="color:#ef4444" aria-hidden="true"></i>Heart Rate</div>
+        <div class="chart-range">
+          <button class="range-btn active" onclick="setRange('hr',this,'1h')">1h</button>
+          <button class="range-btn" onclick="setRange('hr',this,'6h')">6h</button>
+          <button class="range-btn" onclick="setRange('hr',this,'24h')">24h</button>
+        </div>
+      </div>
+      <div style="position:relative;width:100%;height:180px;">
+        <canvas id="hrChart" role="img" aria-label="Line chart of heart rate over time">Heart rate readings over time.</canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-title"><i class="ti ti-drop-circle" style="color:#3b82f6" aria-hidden="true"></i>SpO2</div>
+        <div class="chart-range">
+          <button class="range-btn active" onclick="setRange('spo2',this,'1h')">1h</button>
+          <button class="range-btn" onclick="setRange('spo2',this,'6h')">6h</button>
+          <button class="range-btn" onclick="setRange('spo2',this,'24h')">24h</button>
+        </div>
+      </div>
+      <div style="position:relative;width:100%;height:180px;">
+        <canvas id="spo2Chart" role="img" aria-label="Line chart of blood oxygen saturation over time">SpO2 readings over time.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-card">
+    <div class="ai-header">
+      <div class="ai-avatar"><i class="ti ti-robot" aria-hidden="true"></i></div>
+      <div>
+        <div class="ai-name">MediLex AI Health Assistant</div>
+        <div class="ai-role">Clinical Intelligence · Powered by RAG</div>
+      </div>
+      <div class="ai-status-pill" id="ai-pill" style="background:var(--color-background-success);color:var(--color-text-success);">
+        <span class="pulse-dot"></span><span id="ai-pill-text">All vitals normal</span>
+      </div>
+    </div>
+    <div class="ai-body" id="ai-summary">Based on your current biometric readings from your smartwatch, your cardiovascular status looks healthy.</div>
+    <div class="ai-insight ok" id="ai-insight">
+      <span id="ai-insight-text">Your heart rate of <strong>72 bpm</strong> and SpO2 of <strong>98%</strong> are within optimal ranges. BMI of <strong>22.2</strong> is in the normal weight category. No action required — keep up your current lifestyle.</span>
+    </div>
+    <div class="rec-grid" id="rec-grid">
+      <div class="rec-item"><i class="ti ti-droplet" style="color:#3b82f6" aria-hidden="true"></i><span>Stay hydrated — drink 2–3L of water today</span></div>
+      <div class="rec-item"><i class="ti ti-walk" style="color:#22c55e" aria-hidden="true"></i><span>30 min light walk will maintain your heart health</span></div>
+      <div class="rec-item"><i class="ti ti-moon" style="color:#8b5cf6" aria-hidden="true"></i><span>Aim for 7–8 hrs sleep to keep vitals stable</span></div>
+      <div class="rec-item"><i class="ti ti-salad" style="color:#f59e0b" aria-hidden="true"></i><span>Include omega-3 rich foods in your next meal</span></div>
+    </div>
+    <div class="ask-row">
+      <button class="ask-btn" onclick="sendPrompt('What does a heart rate of 72 bpm mean for my health?')">What does HR 72 bpm mean? ↗</button>
+      <button class="ask-btn" onclick="sendPrompt('Is SpO2 of 98% considered optimal and what affects blood oxygen?')">Is SpO2 98% optimal? ↗</button>
+      <button class="ask-btn" onclick="sendPrompt('How can I improve my BMI through diet and exercise?')">How to improve BMI? ↗</button>
+    </div>
+  </div>
+
+  <div class="history-card">
+    <div class="history-header"><i class="ti ti-history" aria-hidden="true"></i>Reading history (today)</div>
+    <div class="history-row">
+      <span class="history-time">Now</span>
+      <span class="history-vals">
+        <span class="history-hr"><i class="ti ti-heart" style="font-size:13px;color:#ef4444"></i> <strong id="h-hr-0">72</strong> bpm</span>
+        <span class="history-spo2"><i class="ti ti-drop-circle" style="font-size:13px"></i> <strong id="h-spo2-0">98</strong>%</span>
+      </span>
+      <span class="history-tag tag-ok" id="h-tag-0">Normal</span>
+    </div>
+    <div class="history-row"><span class="history-time">–5 min</span><span class="history-vals"><span class="history-hr"><i class="ti ti-heart" style="font-size:13px;color:#ef4444"></i> <strong>75</strong> bpm</span><span class="history-spo2"><i class="ti ti-drop-circle" style="font-size:13px"></i> <strong>97</strong>%</span></span><span class="history-tag tag-ok">Normal</span></div>
+    <div class="history-row"><span class="history-time">–15 min</span><span class="history-vals"><span class="history-hr"><i class="ti ti-heart" style="font-size:13px;color:#ef4444"></i> <strong>88</strong> bpm</span><span class="history-spo2"><i class="ti ti-drop-circle" style="font-size:13px"></i> <strong>97</strong>%</span></span><span class="history-tag tag-ok">Normal</span></div>
+    <div class="history-row"><span class="history-time">–30 min</span><span class="history-vals"><span class="history-hr"><i class="ti ti-heart" style="font-size:13px;color:#ef4444"></i> <strong>110</strong> bpm</span><span class="history-spo2"><i class="ti ti-drop-circle" style="font-size:13px"></i> <strong>96</strong>%</span></span><span class="history-tag tag-warn">Elevated</span></div>
+    <div class="history-row"><span class="history-time">–1 hr</span><span class="history-vals"><span class="history-hr"><i class="ti ti-heart" style="font-size:13px;color:#ef4444"></i> <strong>68</strong> bpm</span><span class="history-spo2"><i class="ti ti-drop-circle" style="font-size:13px"></i> <strong>98</strong>%</span></span><span class="history-tag tag-ok">Normal</span></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const ranges = {
+  hr: {
+    '1h':  { labels: ['–60m','–50m','–40m','–30m','–20m','–10m','now'], data: [68,71,74,110,95,75,72] },
+    '6h':  { labels: ['–6h','–5h','–4h','–3h','–2h','–1h','now'],       data: [65,70,88,74,80,68,72] },
+    '24h': { labels: ['6am','9am','12pm','3pm','6pm','9pm','now'],        data: [58,72,88,95,80,68,72] }
+  },
+  spo2: {
+    '1h':  { labels: ['–60m','–50m','–40m','–30m','–20m','–10m','now'], data: [98,97,97,96,97,97,98] },
+    '6h':  { labels: ['–6h','–5h','–4h','–3h','–2h','–1h','now'],       data: [97,98,97,96,98,98,98] },
+    '24h': { labels: ['6am','9am','12pm','3pm','6pm','9pm','now'],        data: [96,98,97,96,98,97,98] }
+  }
+};
+
+function makeChart(id, data, labels, color, yMin, yMax, unitSuffix) {
+  return new Chart(document.getElementById(id), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: unitSuffix, data, borderColor: color, backgroundColor: color + '18', borderWidth: 2, pointRadius: 3, pointBackgroundColor: color, pointBorderColor: '#fff', pointBorderWidth: 1.5, tension: 0.4, fill: true },
+        { label: 'Upper', data: labels.map(() => yMax), borderColor: '#ef444440', borderWidth: 1, borderDash: [4,3], pointRadius: 0, fill: false },
+        { label: 'Lower', data: labels.map(() => yMin), borderColor: '#3b82f640', borderWidth: 1, borderDash: [4,3], pointRadius: 0, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + unitSuffix } } },
+      scales: {
+        x: { grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { color: '#888', font: { size: 10 }, maxRotation: 0 } },
+        y: { grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { color: '#888', font: { size: 10 }, callback: v => v + unitSuffix }, suggestedMin: yMin - 5, suggestedMax: yMax + 5 }
+      },
+      animation: { duration: 500, easing: 'easeInOutQuart' }
+    }
+  });
+}
+
+const hrChart   = makeChart('hrChart',   ranges.hr['1h'].data,   ranges.hr['1h'].labels,   '#ef4444', 60, 100, ' bpm');
+const spo2Chart = makeChart('spo2Chart', ranges.spo2['1h'].data, ranges.spo2['1h'].labels, '#3b82f6', 92, 100, '%');
+
+function setRange(type, btn, range) {
+  btn.closest('.chart-range').querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const r = ranges[type][range];
+  const chart = type === 'hr' ? hrChart : spo2Chart;
+  chart.data.labels = r.labels;
+  chart.data.datasets[0].data = r.data;
+  chart.data.datasets[1].data = r.labels.map(() => type === 'hr' ? 100 : 100);
+  chart.data.datasets[2].data = r.labels.map(() => type === 'hr' ? 60  : 92);
+  chart.update();
+}
+
+function recalcBMI() {
+  const h = parseFloat(document.getElementById('inp-height').value) || 175;
+  const w = parseFloat(document.getElementById('inp-weight').value) || 68;
+  const bmi = w / ((h / 100) * (h / 100));
+  const bmiRounded = Math.round(bmi * 10) / 10;
+
+  document.getElementById('bmi-val').textContent = bmiRounded.toFixed(1);
+  document.getElementById('disp-height').textContent = Math.round(h);
+  document.getElementById('disp-weight').textContent = Math.round(w);
+
+  let cat, color, needlePct;
+  if (bmi < 18.5) {
+    cat = 'Underweight'; color = '#3b82f6';
+    needlePct = Math.max(2, (bmi / 18.5) * 22);
+  } else if (bmi < 25) {
+    cat = 'Normal weight'; color = '#22c55e';
+    needlePct = 22 + ((bmi - 18.5) / 6.5) * 24;
+  } else if (bmi < 30) {
+    cat = 'Overweight'; color = '#f59e0b';
+    needlePct = 46 + ((bmi - 25) / 5) * 24;
+  } else {
+    cat = 'Obese'; color = '#ef4444';
+    needlePct = Math.min(97, 70 + ((bmi - 30) / 20) * 27);
+  }
+
+  document.getElementById('bmi-cat').textContent = cat;
+  document.getElementById('bmi-cat').style.color = color;
+  document.getElementById('bmi-number') && (document.getElementById('bmi-val').style.color = 'var(--color-text-primary)');
+  document.getElementById('bmi-needle').style.left = needlePct.toFixed(1) + '%';
+
+  const aiAskBtn = document.querySelector('.ask-row button:last-child');
+  if (aiAskBtn) aiAskBtn.onclick = () => sendPrompt(`My BMI is ${bmiRounded.toFixed(1)} (${cat}). What does this mean and how can I improve it?`);
+}
+
+function getVitalState(hr, spo2) {
+  if (spo2 < 92 || hr > 130 || hr < 45) return 'danger';
+  if (spo2 < 95 || hr > 110 || hr < 55) return 'warn';
+  return 'ok';
+}
+
+function updateUI(hr, spo2) {
+  document.getElementById('hr-val').textContent = hr;
+  document.getElementById('spo2-val').textContent = spo2;
+  document.getElementById('h-hr-0').textContent = hr;
+  document.getElementById('h-spo2-0').textContent = spo2;
+
+  document.getElementById('hr-bar').style.width   = Math.min(100, Math.round((hr / 200) * 100)) + '%';
+  document.getElementById('spo2-bar').style.width = Math.min(100, spo2) + '%';
+
+  const bmi = parseFloat(document.getElementById('bmi-val').textContent) || 22.2;
+  const bmiCat = document.getElementById('bmi-cat').textContent;
+  const state = getVitalState(hr, spo2);
+  const hrStatus   = document.getElementById('hr-status');
+  const spo2Status = document.getElementById('spo2-status');
+  const insight    = document.getElementById('ai-insight');
+  const pill       = document.getElementById('ai-pill');
+  const pillTxt    = document.getElementById('ai-pill-text');
+  const tag0       = document.getElementById('h-tag-0');
+
+  if (state === 'ok') {
+    hrStatus.className   = 'metric-status status-normal'; hrStatus.textContent   = '✓ Normal (60–100 bpm)';
+    spo2Status.className = 'metric-status status-normal'; spo2Status.textContent = '✓ Excellent saturation';
+    insight.className = 'ai-insight ok';
+    document.getElementById('ai-insight-text').innerHTML = `Your heart rate of <strong>${hr} bpm</strong> and SpO2 of <strong>${spo2}%</strong> are within optimal ranges. BMI of <strong>${bmi}</strong> (${bmiCat}). No action required — keep up your current lifestyle.`;
+    document.getElementById('ai-summary').textContent = 'Based on your current readings, your cardiovascular and metabolic status looks healthy.';
+    pill.style.background = 'var(--color-background-success)'; pill.style.color = 'var(--color-text-success)';
+    pillTxt.textContent = 'All vitals normal';
+    tag0.className = 'history-tag tag-ok'; tag0.textContent = 'Normal';
+  } else if (state === 'warn') {
+    hrStatus.className   = 'metric-status status-warn'; hrStatus.textContent   = '⚠ Slightly elevated — monitor';
+    spo2Status.className = spo2 < 95 ? 'metric-status status-warn' : 'metric-status status-normal';
+    spo2Status.textContent = spo2 < 95 ? '⚠ Below recommended threshold' : '✓ Acceptable';
+    insight.className = 'ai-insight warn';
+    document.getElementById('ai-insight-text').innerHTML = `Your heart rate of <strong>${hr} bpm</strong>${spo2 < 95 ? ` and SpO2 of <strong>${spo2}%</strong>` : ''} needs attention. Rest for 10–15 minutes, take slow deep breaths, and stay hydrated.`;
+    document.getElementById('ai-summary').textContent = 'Your readings show some elevation — possibly due to activity, stress, or dehydration. Monitor for 15 minutes.';
+    pill.style.background = 'var(--color-background-warning)'; pill.style.color = 'var(--color-text-warning)';
+    pillTxt.textContent = 'Needs attention';
+    tag0.className = 'history-tag tag-warn'; tag0.textContent = 'Elevated';
+  } else {
+    hrStatus.className   = 'metric-status status-danger'; hrStatus.textContent   = '✗ Critical — seek medical help';
+    spo2Status.className = 'metric-status status-danger'; spo2Status.textContent = spo2 < 92 ? '✗ Dangerously low' : '⚠ Monitor closely';
+    insight.className = 'ai-insight danger';
+    document.getElementById('ai-insight-text').innerHTML = `<strong>Alert:</strong> HR <strong>${hr} bpm</strong> and SpO2 <strong>${spo2}%</strong> are in a critical range. Sit down, stay calm, and contact a healthcare provider or emergency services immediately.`;
+    document.getElementById('ai-summary').textContent = 'Critical biometric values detected. Immediate medical attention may be required.';
+    pill.style.background = 'var(--color-background-danger)'; pill.style.color = 'var(--color-text-danger)';
+    pillTxt.textContent = 'Critical alert';
+    tag0.className = 'history-tag tag-crit'; tag0.textContent = 'Critical';
+  }
+
+  hrChart.data.datasets[0].data.push(hr);   hrChart.data.datasets[0].data.shift();
+  spo2Chart.data.datasets[0].data.push(spo2); spo2Chart.data.datasets[0].data.shift();
+  hrChart.update(); spo2Chart.update();
+}
+
+recalcBMI();
+
+let tick = 0;
+setInterval(() => {
+  tick++;
+  const hr   = Math.max(40, Math.min(180, 72 + Math.round(Math.sin(tick * 0.4) * 5 + (Math.random() - 0.5) * 4)));
+  const spo2 = Math.max(88, Math.min(100, 98 + Math.round((Math.random() - 0.5) * 2)));
+  updateUI(hr, spo2);
+}, 3000);
+</script>

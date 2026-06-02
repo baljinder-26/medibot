@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+
+# IDE files
+.vscode/
+.idea/
+
+# Local databases & credentials
+*.sqlite3
+credentials.json
+token.pkl
+*.pkl
+*.pdf
+medilex-rag/backend/data/
+
+# Node dependencies and build files
+node_modules/
+dist/
+build/
+.next/
+out/
+
+# Environment configurations
+.env
+.env.*
+!.env.example

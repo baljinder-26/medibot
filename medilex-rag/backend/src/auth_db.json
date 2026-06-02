@@ -1,0 +1,69 @@
+{
+    "users": [
+        {
+            "username": "baljinder",
+            "email": "bali@gmail.com",
+            "password": "bali",
+            "height": "178",
+            "weight": "82.4",
+            "bmi": "26.0",
+            "sessions": [
+                {
+                    "id": 1780395229803,
+                    "title": "hi",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "hi",
+                            "userImage": null,
+                            "time": "03:46 PM"
+                        },
+                        {
+                            "role": "ai",
+                            "content": "Hi, it's nice to meet you. I'm MediLex AI, your go-to medical assistant for the Gale Encyclopedia of Medicine. I can provide you with structured information on a wide range of topics, from diseases and symptoms to diagnosis and treatments. How can I help you today?",
+                            "pages": [],
+                            "image": null,
+                            "time": "03:46 PM"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "username": "Baljinder Singh",
+            "email": "baljindersingh2114@gmail.com",
+            "password": "bali",
+            "height": "N/A",
+            "weight": "N/A",
+            "bmi": "N/A",
+            "sessions": []
+        },
+        {
+            "username": "Ankur Gaba",
+            "email": "ankur1@gmail.com",
+            "password": "ankur",
+            "height": "N/A",
+            "weight": "N/A",
+            "bmi": "N/A",
+            "sessions": []
+        },
+        {
+            "username": "Baljinder Singh",
+            "email": "baljindersingh2114@gmail.com",
+            "password": "bali",
+            "height": "N/A",
+            "weight": "N/A",
+            "bmi": "N/A",
+            "sessions": []
+        },
+        {
+            "username": "Ankur Gaba",
+            "email": "ankur1@gmail.com",
+            "password": "ankur",
+            "height": "N/A",
+            "weight": "N/A",
+            "bmi": "N/A",
+            "sessions": []
+        }
+    ]
+}

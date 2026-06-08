@@ -9,10 +9,6 @@ from typing import List, Optional, Any
 import uvicorn
 
 from dotenv import load_dotenv
-import pickle
-import datetime
-from googleapiclient.discovery import build
-import requests
 
 load_dotenv()
 

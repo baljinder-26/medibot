@@ -139,140 +139,17 @@ async def chat_endpoint(request: ChatRequest):
 
 @app.get("/api/vitals")
 def get_live_vitals():
+    """
+    Returns mock biometric data since live Google Fit integration is disabled for deployment.
+    """
     try:
-        token_path = r"e:\medibot\token.pkl"
-        if not os.path.exists(token_path):
-            raise HTTPException(status_code=401, detail="Token not found.")
-            
-        with open(token_path, "rb") as token:
-            creds = pickle.load(token)
-            
-        service = build('fitness', 'v1', credentials=creds)
-        
-        end_time = datetime.datetime.now(datetime.timezone.utc)
-        start_time = end_time - datetime.timedelta(hours=24)
-        
-        body_hr = {
-            "aggregateBy": [{"dataTypeName": "com.google.heart_rate.bpm"}],
-            "bucketByTime": {"durationMillis": 60000},
-            "startTimeMillis": int(start_time.timestamp() * 1000),
-            "endTimeMillis": int(end_time.timestamp() * 1000)
-        }
-        
-        body_spo2 = {
-            "aggregateBy": [{"dataTypeName": "com.google.oxygen_saturation"}],
-            "bucketByTime": {"durationMillis": 60000},
-            "startTimeMillis": int(start_time.timestamp() * 1000),
-            "endTimeMillis": int(end_time.timestamp() * 1000)
-        }
-        
-        result_hr = service.users().dataset().aggregate(userId="me", body=body_hr).execute()
-        result_spo2 = service.users().dataset().aggregate(userId="me", body=body_spo2).execute()
-        
-        # Use india timezone like livehr.py
-        india_timezone = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
-        
-        time_map = {}
-        
-        for bucket in result_hr.get("bucket", []):
-            for dataset in bucket.get("dataset", []):
-                for point in dataset.get("point", []):
-                    values = point.get("value", [])
-                    if values and values[0].get("fpVal"):
-                        hr = round(values[0].get("fpVal"))
-                        start_ns = int(point.get("startTimeNanos", 0))
-                        utc_time = datetime.datetime.fromtimestamp(start_ns / 1e9, tz=datetime.timezone.utc)
-                        local_time = utc_time.astimezone(india_timezone)
-                        
-                        if local_time not in time_map:
-                            time_map[local_time] = {"time_obj": local_time}
-                        time_map[local_time]["hr"] = hr
-                        
-        for bucket in result_spo2.get("bucket", []):
-            for dataset in bucket.get("dataset", []):
-                for point in dataset.get("point", []):
-                    values = point.get("value", [])
-                    if values and values[0].get("fpVal"):
-                        spo2 = round(values[0].get("fpVal"), 1)
-                        start_ns = int(point.get("startTimeNanos", 0))
-                        utc_time = datetime.datetime.fromtimestamp(start_ns / 1e9, tz=datetime.timezone.utc)
-                        local_time = utc_time.astimezone(india_timezone)
-                        
-                        if local_time not in time_map:
-                            time_map[local_time] = {"time_obj": local_time}
-                        time_map[local_time]["spo2"] = spo2
-                        
-        # Sort chronologically (oldest first) to carry forward fallbacks properly
-        sorted_times = sorted(time_map.keys())
-        
-        history_all = []
-        curr_hr = 72
-        curr_spo2 = 98
-        
-        for t in sorted_times:
-            entry = time_map[t]
-            if "hr" in entry: curr_hr = entry["hr"]
-            if "spo2" in entry: curr_spo2 = entry["spo2"]
-            
-            time_str = t.strftime("%I:%M %p")
-            
-            h_state = "ok"
-            if curr_spo2 < 92 or curr_hr > 130 or curr_hr < 45: h_state = "danger"
-            elif curr_spo2 < 95 or curr_hr > 110 or curr_hr < 55: h_state = "warn"
-            
-            # Since some points might have the exact same minute but different seconds, we can just append
-            # But to avoid duplicate minute rows if we want, we could deduplicate. 
-            # We'll just append them all.
-            history_all.append({
-                "time": time_str,
-                "hr": curr_hr,
-                "spo2": curr_spo2,
-                "state": h_state
-            })
-            
-        # Reverse to get newest first and take top 6
-        history_all.reverse()
-        history = history_all[:6]
-                
-        if not history:
-            history = [{"time": "Now", "hr": 72, "spo2": 98, "state": "ok"}]
-            hr_val = 72
-            spo2_val = 98
-        else:
-            hr_val = history[0]["hr"]
-            spo2_val = history[0]["spo2"]
-        
-        prompt = f"""
-        You are a clinical AI assistant. A patient's smart watch just recorded a heart rate of {hr_val} bpm and SpO2 of {spo2_val}%.
-        Analyze these readings briefly and reassuringly.
-        Provide your response in JSON format with two keys:
-        - "summary": A very short 1-sentence summary (e.g. "Based on your current readings, your cardiovascular status looks healthy.")
-        - "insight": A detailed 2-3 sentence insight (e.g. "Your heart rate of {hr_val} bpm and SpO2 of {spo2_val}% are within optimal ranges. No action required.")
-        Return ONLY valid JSON.
-        """
-        
+        hr_val = 72
+        spo2_val = 98
         summary = "Based on your current biometric readings, your cardiovascular status looks healthy."
-        insight = f"Your heart rate of {hr_val} bpm and SpO2 of {spo2_val}% are within optimal ranges. No action required — keep up your current lifestyle."
-        
-        try:
-            ollama_res = requests.post("http://localhost:11434/api/generate", json={
-                "model": "llama3a:latest",
-                "prompt": prompt,
-                "stream": False,
-                "format": "json"
-            }, timeout=10)
-            if ollama_res.status_code == 200:
-                ollama_data = ollama_res.json()
-                ai_resp = json.loads(ollama_data.get("response", "{}"))
-                summary = ai_resp.get("summary", summary)
-                insight = ai_resp.get("insight", insight)
-        except Exception as e:
-            print("[WARNING] Ollama failed:", e)
-            
+        insight = "Your heart rate of 72 bpm and SpO2 of 98% are within optimal ranges. No action required — keep up your current lifestyle."
         state = "ok"
-        if spo2_val < 92 or hr_val > 130 or hr_val < 45: state = "danger"
-        elif spo2_val < 95 or hr_val > 110 or hr_val < 55: state = "warn"
-
+        history = [{"time": "Now", "hr": hr_val, "spo2": spo2_val, "state": state}]
+        
         return {
             "hr": hr_val,
             "spo2": spo2_val,

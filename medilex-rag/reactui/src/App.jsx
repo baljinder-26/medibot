@@ -255,6 +255,13 @@ function App() {
     setWeight('');
   };
 
+  const playGreeting = (name) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(`Welcome, ${name}. I am MediRap AI, your assistant.`);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const closeAuthModal = () => setShowAuthModal(false);
 
   const handleAuthSubmit = async (e) => {
@@ -298,6 +305,7 @@ function App() {
         setActiveSessionId(data.user.sessions?.[0]?.id || Date.now());
         closeAuthModal();
         setView('chat');
+        playGreeting(data.user.username);
       } catch (err) {
         setAuthError(err.message);
       }
@@ -322,6 +330,7 @@ function App() {
         setActiveSessionId(userSessions[0].id);
         closeAuthModal();
         setView('chat');
+        playGreeting(data.user.username);
       } catch (err) {
         setAuthError(err.message);
       }

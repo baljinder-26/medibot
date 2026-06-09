@@ -664,6 +664,7 @@
     transform-origin: center center;
     margin: -40px auto;
   }
+  .scroll-hint { display: none; }
   .about-grid { grid-template-columns: 1fr; gap: 30px; }
   .caps-grid { grid-template-columns: 1fr; }
   .section { padding: 50px 10px; overflow-x: hidden; width: 100%; box-sizing: border-box; }

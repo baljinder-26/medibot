@@ -628,8 +628,8 @@
     width: 100%;
     box-sizing: border-box;
   }
-  .hero-right { order: -1; }
-  .hero-left { order: 1; }
+  .hero-right { order: -1; min-width: 0; width: 100%; overflow: hidden; display: flex; justify-content: center; }
+  .hero-left { order: 1; min-width: 0; width: 100%; overflow: hidden; }
   .hero-title {
     font-size: 1.8rem;
     line-height: 1.1;

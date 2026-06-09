@@ -179,6 +179,7 @@ function App() {
   // News State
   const [newsArticles, setNewsArticles] = useState([]);
   const [newsLoading, setNewsLoading] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -806,6 +807,7 @@ function App() {
         <div className="chat-nav">
           <div className="chat-nav-left">
             <button className="back-btn" onClick={() => setView('landing')} title="Back to Home">←</button>
+            <button className="hamburger-btn" onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}>☰</button>
             <div className="chat-brand">
               <div className="chat-brand-icon">🧬</div>
               <div>
@@ -859,9 +861,10 @@ function App() {
         )}
 
         <div className="chat-body">
-          <div className="chat-sidebar" style={{ padding: 0, gap: 0, overflow: 'hidden' }}>
+          {isMobileSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsMobileSidebarOpen(false)}></div>}
+          <div className={`chat-sidebar ${isMobileSidebarOpen ? 'open' : ''}`} style={{ padding: 0, gap: 0, overflow: 'hidden' }}>
             <div style={{ padding: '20px 16px 8px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <button className="new-chat-btn" onClick={handleNewChat}>
+              <button className="new-chat-btn" onClick={() => { handleNewChat(); setIsMobileSidebarOpen(false); }}>
                 <span>✏️</span> New Chat
               </button>
               <div className="sidebar-label">Recent Chats</div>
@@ -872,7 +875,7 @@ function App() {
                 <div 
                   key={s.id} 
                   className={`chat-history-item ${activeSessionId === s.id ? 'active' : ''}`}
-                  onClick={() => setActiveSessionId(s.id)}
+                  onClick={() => { setActiveSessionId(s.id); setIsMobileSidebarOpen(false); }}
                 >
                   <span className="chi-icon">💬</span>
                   <span className="chi-text">{s.title || 'New Chat'}</span>

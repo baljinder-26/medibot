@@ -613,6 +613,7 @@
   /* ----- LANDING PAGE ----- */
   nav { padding: 16px 20px; }
   .nav-links { display: none; }
+  .nav-cta { white-space: nowrap; padding: 8px 16px; }
   .hero { 
     grid-template-columns: 1fr; 
     padding: 100px 20px 60px; 
@@ -622,9 +623,10 @@
   .hero-right { order: -1; }
   .hero-left { order: 1; }
   .hero-title {
-    font-size: clamp(2.2rem, 10vw, 3rem);
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
     word-break: break-word;
-    margin-top: 20px;
+    margin-top: 10px;
+    padding: 0 5px;
   }
   .hero-sub {
     margin: 0 auto 30px;
@@ -663,17 +665,27 @@
   }
 
   /* ----- CHAT PAGE ----- */
-  .chat-nav { padding: 0 16px; }
+  .chat-nav { 
+    padding: 12px 16px; 
+    flex-wrap: wrap; 
+    height: auto; 
+    gap: 8px; 
+  }
+  .chat-nav-right { flex-wrap: wrap; }
+  .chat-status { display: none; }
+  .chat-nav-right span { display: none !important; }
+  
   .chat-body { flex-direction: column; }
   
   .chat-sidebar {
     width: 100%;
-    height: auto;
-    max-height: 80px;
+    height: 64px;
+    max-height: none;
     flex-direction: row;
+    flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 10px;
+    padding: 0 10px;
     border-right: none;
     border-bottom: 1px solid var(--border);
     align-items: center;
@@ -684,12 +696,16 @@
     margin: 0;
     flex-shrink: 0;
     padding: 8px 12px;
+    height: 40px;
+    white-space: nowrap;
   }
   .chat-history-item {
     flex-shrink: 0;
     width: auto;
     max-width: 140px;
     margin: 0;
+    height: 40px;
+    white-space: nowrap;
   }
   .chat-right-panel {
     display: none;

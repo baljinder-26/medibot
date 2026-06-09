@@ -660,9 +660,9 @@
     align-items: center;
   }
   .orb-wrap {
-    transform: scale(0.45);
-    transform-origin: top center;
-    margin: -100px auto 0;
+    transform: scale(0.7);
+    transform-origin: center center;
+    margin: -40px auto;
   }
   .about-grid { grid-template-columns: 1fr; gap: 30px; }
   .caps-grid { grid-template-columns: 1fr; }

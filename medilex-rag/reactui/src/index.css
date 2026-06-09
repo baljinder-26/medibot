@@ -693,7 +693,11 @@
     font-size: 1.5rem; cursor: pointer; padding: 0 5px; margin-right: 10px;
     align-items: center; justify-content: center;
   }
-  .chat-nav-right { flex-wrap: wrap; }
+  .chat-nav-right { 
+    width: 100%; 
+    justify-content: space-between; 
+    margin-top: 5px; 
+  }
   .chat-status { display: none; }
   .chat-nav-right span { display: none !important; }
   

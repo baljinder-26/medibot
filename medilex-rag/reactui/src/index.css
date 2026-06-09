@@ -610,26 +610,33 @@
 
 /* ═══════════════ MOBILE RESPONSIVE ═══════════════ */
 @media (max-width: 768px) {
-  /* ----- LANDING PAGE ----- */
-  nav { padding: 16px 20px; }
+  /* ----- GLOBAL & LANDING PAGE ----- */
+  body, .page { overflow-x: hidden; max-width: 100vw; }
+  nav { padding: 12px 10px; gap: 5px; }
+  .nav-logo { font-size: 1rem; gap: 5px; }
+  .nav-logo-icon { width: 24px; height: 24px; font-size: 12px; }
   .nav-links { display: none; }
-  .nav-cta { white-space: nowrap; padding: 8px 16px; }
+  .btn-ghost { padding: 6px !important; font-size: 0.75rem !important; }
+  .nav-cta { white-space: nowrap; padding: 6px 10px !important; font-size: 0.75rem !important; }
   .hero { 
     grid-template-columns: 1fr; 
-    padding: 100px 20px 60px; 
+    padding: 100px 15px 40px; 
     text-align: center; 
-    gap: 40px; 
+    gap: 30px; 
+    overflow: hidden;
+    width: 100%;
   }
   .hero-right { order: -1; }
   .hero-left { order: 1; }
   .hero-title {
-    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    font-size: clamp(1.5rem, 8vw, 2.2rem);
     word-break: break-word;
     margin-top: 10px;
-    padding: 0 5px;
+    padding: 0;
   }
   .hero-sub {
     margin: 0 auto 30px;
+    font-size: 0.9rem;
   }
   .hero-actions {
     flex-direction: column;
@@ -642,18 +649,19 @@
   }
   .stats-row {
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     align-items: center;
   }
   .orb-wrap {
-    transform: scale(0.65);
-    margin: -80px 0;
+    transform: scale(0.5);
+    transform-origin: center;
+    margin: -100px 0;
   }
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
   .caps-grid { grid-template-columns: 1fr; }
-  .section { padding: 60px 20px; }
-  .cta-section { padding: 40px 20px; margin: 0 20px 60px; }
-  footer { flex-direction: column; gap: 10px; text-align: center; padding: 30px 20px; }
+  .section { padding: 50px 15px; overflow: hidden; }
+  .cta-section { padding: 40px 20px; margin: 0 15px 60px; }
+  footer { flex-direction: column; gap: 10px; text-align: center; padding: 30px 15px; }
 
   /* Auth Modal */
   .auth-modal {

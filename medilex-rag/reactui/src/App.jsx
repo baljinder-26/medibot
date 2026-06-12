@@ -155,6 +155,7 @@ function App() {
 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('signin'); // 'signin' or 'signup'
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
   
   // Auth Form State
   const [username, setUsername] = useState('');
@@ -268,10 +269,12 @@ function App() {
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setAuthError('');
+    setIsAuthLoading(true);
 
     if (authMode === 'signup') {
       if (!email || !password || !username) {
         setAuthError('Please fill in email, username and password.');
+        setIsAuthLoading(false);
         return;
       }
       
@@ -309,11 +312,14 @@ function App() {
         playGreeting(data.user.username);
       } catch (err) {
         setAuthError(err.message);
+      } finally {
+        setIsAuthLoading(false);
       }
     } else {
       // Sign In
       if (!email || !password) {
         setAuthError('Please fill in both email and password.');
+        setIsAuthLoading(false);
         return;
       }
       try {
@@ -334,6 +340,8 @@ function App() {
         playGreeting(data.user.username);
       } catch (err) {
         setAuthError(err.message);
+      } finally {
+        setIsAuthLoading(false);
       }
     }
   };
@@ -580,39 +588,49 @@ function App() {
             </div>
 
             <form className="auth-form" onSubmit={handleAuthSubmit}>
-              {authMode === 'signup' && (
-                <div className="auth-input-group">
-                  <label className="auth-label">Username</label>
-                  <input type="text" className="auth-input" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter your username" required />
+              {isAuthLoading ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '3rem 0' }}>
+                  <div style={{ border: '4px solid rgba(255,255,255,0.1)', borderTop: '4px solid var(--teal, #00e5c3)', borderRadius: '50%', width: '40px', height: '40px', animation: 'spin 1s linear infinite' }}></div>
+                  <p style={{ marginTop: '1.5rem', color: 'var(--text, #fff)', fontSize: '1.1rem' }}>wait a minutes</p>
+                  <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
                 </div>
-              )}
-              <div className="auth-input-group">
-                <label className="auth-label">Email</label>
-                <input type="email" className="auth-input" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email" required />
-              </div>
-              <div className="auth-input-group">
-                <label className="auth-label">Password</label>
-                <input type="password" className="auth-input" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" required />
-              </div>
-              
-              {authMode === 'signup' && (
-                <div className="grid-2">
+              ) : (
+                <>
+                  {authMode === 'signup' && (
+                    <div className="auth-input-group">
+                      <label className="auth-label">Username</label>
+                      <input type="text" className="auth-input" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter your username" required />
+                    </div>
+                  )}
                   <div className="auth-input-group">
-                    <label className="auth-label">Height (cm) - Optional</label>
-                    <input type="number" className="auth-input" value={height} onChange={e => setHeight(e.target.value)} placeholder="e.g. 175" />
+                    <label className="auth-label">Email</label>
+                    <input type="email" className="auth-input" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email" required />
                   </div>
                   <div className="auth-input-group">
-                    <label className="auth-label">Weight (kg) - Optional</label>
-                    <input type="number" className="auth-input" value={weight} onChange={e => setWeight(e.target.value)} placeholder="e.g. 70" />
+                    <label className="auth-label">Password</label>
+                    <input type="password" className="auth-input" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" required />
                   </div>
-                </div>
-              )}
+                  
+                  {authMode === 'signup' && (
+                    <div className="grid-2">
+                      <div className="auth-input-group">
+                        <label className="auth-label">Height (cm) - Optional</label>
+                        <input type="number" className="auth-input" value={height} onChange={e => setHeight(e.target.value)} placeholder="e.g. 175" />
+                      </div>
+                      <div className="auth-input-group">
+                        <label className="auth-label">Weight (kg) - Optional</label>
+                        <input type="number" className="auth-input" value={weight} onChange={e => setWeight(e.target.value)} placeholder="e.g. 70" />
+                      </div>
+                    </div>
+                  )}
 
-              {authError && <div className="auth-error">{authError}</div>}
-              
-              <button type="submit" className="auth-submit">
-                {authMode === 'signin' ? 'Access Workspace' : 'Create Profile'}
-              </button>
+                  {authError && <div className="auth-error">{authError}</div>}
+                  
+                  <button type="submit" className="auth-submit">
+                    {authMode === 'signin' ? 'Access Workspace' : 'Create Profile'}
+                  </button>
+                </>
+              )}
             </form>
           </div>
         </div>

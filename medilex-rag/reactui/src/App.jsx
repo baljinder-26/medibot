@@ -117,6 +117,19 @@ function App() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('app_theme') || 'dark';
+  });
+
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('app_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const messageRefs = useRef({});
@@ -686,7 +699,10 @@ function App() {
             <li><a href="#features">Features</a></li>
             <li><a href="#capabilities">Capabilities</a></li>
           </ul>
-          <div style={{display: 'flex', gap: '12px'}}>
+          <div style={{display: 'flex', gap: '12px', alignItems: 'center'}}>
+            <button className="nav-icon-btn" style={{border: 'none', background: 'transparent'}} title="Toggle Theme" onClick={toggleTheme}>
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
             {!currentUser && (
               <button className="btn-ghost" style={{padding: '10px'}} onClick={() => handleLandingAction('signin')}>Sign In</button>
             )}
@@ -838,6 +854,9 @@ function App() {
             <span style={{ color: 'var(--teal)', fontSize: '0.85rem', marginRight: '10px' }}>
               Welcome, {currentUser?.username}
             </span>
+            <button className="nav-icon-btn" title="Toggle Theme" onClick={toggleTheme}>
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
             <button className="nav-icon-btn" title="Search Chat" onClick={() => setShowSearch(!showSearch)}>
               🔍
             </button>

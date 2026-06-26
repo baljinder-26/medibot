@@ -766,3 +766,146 @@
   }
   .msg { max-width: 100%; }
 }
+
+/* ═══════════════ LIGHT THEME (GLASSMORPHISM) ═══════════════ */
+[data-theme="light"] {
+  --bg: transparent; /* Handled by body background */
+  --card: rgba(255, 255, 255, 0.45);
+  --border: rgba(255, 255, 255, 0.6);
+  --white: #0f172a; /* Main text color */
+  --muted: #475569;
+  --teal: #0d9488;
+  --teal2: #0f766e;
+  --blue: #2563eb;
+  --purple: #7c3aed;
+}
+
+[data-theme="light"] body {
+  background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+  background-attachment: fixed;
+  color: var(--white);
+}
+
+[data-theme="light"] .glow-line {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.8) 50%, transparent 100%);
+}
+
+/* Glassmorphism base for most containers */
+[data-theme="light"] nav,
+[data-theme="light"] .chat-nav,
+[data-theme="light"] .chat-sidebar,
+[data-theme="light"] .chat-right-panel,
+[data-theme="light"] .input-area,
+[data-theme="light"] .input-box,
+[data-theme="light"] .msg.ai .msg-bubble,
+[data-theme="light"] .feature-card,
+[data-theme="light"] .cap-card,
+[data-theme="light"] .float-card,
+[data-theme="light"] .quick-pill,
+[data-theme="light"] .topic-pill,
+[data-theme="light"] .health-card,
+[data-theme="light"] .cta-section {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+}
+
+[data-theme="light"] .input-box {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="light"] #chatInput {
+  color: var(--white);
+}
+
+[data-theme="light"] #chatInput::placeholder {
+  color: var(--muted);
+}
+
+[data-theme="light"] .msg.user .msg-bubble {
+  background: linear-gradient(135deg, rgba(13,148,136,0.15), rgba(37,99,235,0.15));
+  border: 1px solid rgba(13,148,136,0.3);
+  color: var(--white);
+}
+
+[data-theme="light"] .chat-brand-name {
+  color: var(--white);
+}
+
+[data-theme="light"] .typing-dots {
+  background: rgba(255,255,255,0.5);
+  border-color: rgba(255,255,255,0.6);
+}
+
+[data-theme="light"] .nav-icon-btn,
+[data-theme="light"] .back-btn,
+[data-theme="light"] .msg-action-btn,
+[data-theme="light"] .input-attach {
+  background: rgba(255,255,255,0.2);
+  color: var(--muted);
+  border-color: rgba(255,255,255,0.4);
+}
+
+[data-theme="light"] .nav-icon-btn:hover,
+[data-theme="light"] .back-btn:hover {
+  background: rgba(255,255,255,0.5);
+  color: var(--teal);
+}
+
+[data-theme="light"] .btn-ghost {
+  color: var(--muted);
+}
+
+[data-theme="light"] .btn-ghost:hover {
+  color: var(--white);
+}
+
+[data-theme="light"] .new-chat-btn,
+[data-theme="light"] .fitness-btn {
+  background: rgba(255,255,255,0.3);
+}
+
+[data-theme="light"] .hero-title,
+[data-theme="light"] .section-title,
+[data-theme="light"] .stat-num,
+[data-theme="light"] .fc-title {
+  color: var(--white);
+}
+
+[data-theme="light"] .badge {
+  background: rgba(255,255,255,0.5);
+}
+
+[data-theme="light"] .orb-core {
+  background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.8), rgba(255,255,255,0.2) 70%);
+  border-color: rgba(255,255,255,0.6);
+  box-shadow: 0 0 40px rgba(255,255,255,0.3);
+}
+
+[data-theme="light"] .welcome-orb {
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.8), rgba(255,255,255,0.3) 70%);
+  border-color: rgba(255,255,255,0.8);
+  box-shadow: 0 0 30px rgba(255,255,255,0.4);
+}
+
+[data-theme="light"] .about-text strong {
+  color: #1e293b;
+}
+
+[data-theme="light"] .cap-num {
+  color: rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .msg-name {
+  color: var(--muted);
+}
+
+[data-theme="light"] .chat-history-item:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+[data-theme="light"] .chat-history-item.active {
+  background: rgba(255,255,255,0.5);
+}

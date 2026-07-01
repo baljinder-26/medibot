@@ -1,0 +1,54 @@
+# ==============================================================================
+# MediLex AI - Backend Keepalive Workflow
+# ==============================================================================
+# This GitHub Actions workflow automatically pings the Render-hosted FastAPI
+# backend every 5 minutes to prevent the service from spinning down or going
+# to sleep due to inactivity.
+# ==============================================================================
+
+name: Keep Render Backend Active
+
+# ------------------------------------------------------------------------------
+# Workflow Triggers
+# ------------------------------------------------------------------------------
+on:
+  # Cron schedule: runs automatically every 5 minutes (standard POSIX cron syntax)
+  schedule:
+    - cron: "*/5 * * * *"
+  # Manual trigger: allows triggering this workflow manually via the GitHub UI or CLI
+  workflow_dispatch:
+
+# ------------------------------------------------------------------------------
+# Jobs Definition
+# ------------------------------------------------------------------------------
+jobs:
+  ping-backend:
+    # Use the latest available Ubuntu virtual environment runner
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Send HTTP GET request to the FastAPI health check endpoint
+      - name: Ping FastAPI /health endpoint
+        run: |
+          echo "Sending keepalive ping to Render backend..."
+          
+          # Execute curl with the following flags:
+          #   -s : Silent mode (hides progress bar)
+          #   -S : Show error messages if curl fails
+          #   --max-time 30 : Timeout after 30 seconds to prevent hanging
+          #   -o /dev/null : Discard the response body
+          #   -w "%{http_code}" : Output only the HTTP status code
+          # We append '|| echo "000"' so that network timeouts or connection errors
+          # do not cause the subshell command to crash the runner step.
+          HTTP_STATUS=$(curl -s -S --max-time 30 -o /dev/null -w "%{http_code}" https://medirap-backend.onrender.com/health || echo "000")
+          
+          echo "Received HTTP status code: $HTTP_STATUS"
+          
+          # Step 2: Handle response and fail gracefully if temporarily unavailable
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "✅ Backend is active and healthy (HTTP 200)."
+          else
+            echo "⚠️ Warning: Backend ping failed or returned non-200 status ($HTTP_STATUS)."
+            echo "The service might be temporarily unavailable, spinning up, or restarting."
+            echo "Gracefully continuing workflow without marking the job as failed."
+          fi

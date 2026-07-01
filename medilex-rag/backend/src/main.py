@@ -75,6 +75,10 @@ class UserUpdate(BaseModel):
 def health_check():
     return {"status": "active", "message": "MediLex AI Backend is running smoothly."}
 
+@app.get("/health")
+def get_health():
+    return {"status": "healthy"}
+
 @app.post("/auth/signup")
 def signup(user: UserSignup):
     email_clean = user.email.strip().lower()
